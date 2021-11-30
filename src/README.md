@@ -1,6 +1,10 @@
 ## OS Raspberry OS 64 Lite
 
-https://downloads.raspberrypi.org/raspios_lite_arm64/images/
+
+
+
+
+
 
 ## usb-modeswitch
 Install usb-modeswitch
