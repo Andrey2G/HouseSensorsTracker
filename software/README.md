@@ -22,6 +22,21 @@ Click on Choose Storage to select SD card
 
 ![Select Custom OS](images/rpi-imager-4.png)
 
+Click Ctrl+Shift+X to display Advanced Options
+
+Disable Ovescan, set hostname (if youlike), enable SSH and set the password for the "pi" user
+
+![Select Custom OS](images/rpi-imager-4-1.png)
+
+Configure WiFi connection (of course in case if you will use USB WiFi stick) by set SSID and password,
+set locale settings
+
+![Select Custom OS](images/rpi-imager-4-2.png)
+
+Set "Skip first-run wizard", and set "Eject media when finished"
+
+![Select Custom OS](images/rpi-imager-4-3.png)
+
 Click on Write to write the image to the selected SD card
 
 ![Select Custom OS](images/rpi-imager-5.png)
@@ -34,26 +49,3 @@ Click on Write to write the image to the selected SD card
 
 ![Select Custom OS](images/rpi-imager-9.png)
 
-Now remove your SD card and insert again
-
-Add empty file with name ssh to enable SSH
-
-Add file wpa_supplicant.conf with the following details to enable WiFi connection
-
-<code>
-
-country=US
-
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-
-network={
-
-    ssid="YOUR_NETWORK_NAME"
-
-    psk="YOUR_PASSWORD"
-
-    key_mgmt=WPA-PSK
-
-}
-
-</code>
