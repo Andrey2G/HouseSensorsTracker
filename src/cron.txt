@@ -1,0 +1,1 @@
+sudo echo '2-58/2 * * * * $HOME/dev/sensors.py >> $HOME/dev/sensors.log 2>&1' | crontab -

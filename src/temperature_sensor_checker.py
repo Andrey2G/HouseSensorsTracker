@@ -51,11 +51,6 @@ def write_data(device, data):
         print (datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"device=",device,"temperature=",data)
         rrdtool.update(device+'.rrd',data)
 
-
-while True:
-        read_sensors_data()
-        time.sleep(5)
-	
 while True:
 	read_sensors_data()
 	time.sleep(5)
