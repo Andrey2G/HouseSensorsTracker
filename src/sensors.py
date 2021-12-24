@@ -37,9 +37,10 @@ def read_sensors_data():
 
 
 def write_data(device, data):
-        if not os.path.exists(device+'.rrd'):
+        rrd_file=os.path.dirname(os.path.abspath(__file__))+"/"+device+'.rrd'
+        if not os.path.exists(rrd_file):
                 print('create rrd for',device)
-                rrdtool.create( device+'.rrd',
+                rrdtool.create(rrd_file,
                 '--start','now',
                 '--step','120',
                 'DS:temp:GAUGE:300:10:100',
@@ -49,8 +50,8 @@ def write_data(device, data):
                 'RRA:AVERAGE:0.5:50:36000')
 
         print (datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"device=",device,"temperature=",data)
-        rrdtool.update(device+'.rrd',data)
+        rrdtool.update(rrd_file,data)
 
-while True:
-	read_sensors_data()
-	time.sleep(5)
+read_sensors_data()
+
+#2-58/2 * * * * /home/pi/dev/cron-command.sh >> /home/pi/dev/sensors.log 2>&1
