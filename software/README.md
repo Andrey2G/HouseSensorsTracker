@@ -85,4 +85,6 @@ sudo apt-get install pip
 
 Install RDD Tool
 
-sudo apt-get install rrdtool python-rrdtool
+sudo apt-get install rrdtool
+
+sudo pip install rrdtool
