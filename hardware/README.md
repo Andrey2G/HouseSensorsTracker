@@ -17,4 +17,5 @@ ZTE MF-100 + Data cable microUSB-USB (OTG)
 
 ![Sensor](images/temperature-sensor.png)
 
+[Datasheet](https://datasheets.maximintegrated.com/en/ds/DS1822.pdf)
 
