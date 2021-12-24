@@ -1,0 +1,11 @@
+
+sudo wpa_passphrase "SSID" "PASS" | sudo tee /etc/wpa_supplicant/wpa_supplicant.conf
+
+sudo nano /etc/network/interfaces
+
+allow-hotplug wlan0
+iface wlan0 inet dhcp
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+Ctrl+O, Enter, Ctrl+X
+sudo reboot
