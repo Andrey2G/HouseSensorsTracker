@@ -129,3 +129,7 @@ dmypy.json
 .pyre/
 *.suo
 .vs/*
+/src/Services/SensorServer/.config
+/src/Services/SensorServer/bin
+/src/Services/SensorServer/obj
+/src/Services/SensorServer/Properties/PublishProfiles

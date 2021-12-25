@@ -32,7 +32,6 @@ def read_sensors_data():
                 device = device_dir + '/w1_slave'
                 device_name = os.path.basename(device_dir)
                 data = read_temperature_sensor(device)
-                now = datetime.datetime.now()
                 write_data(device_name,'N:'+str(data))
 
 
