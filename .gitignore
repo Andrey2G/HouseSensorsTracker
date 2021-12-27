@@ -133,3 +133,6 @@ dmypy.json
 /src/Services/SensorServer/bin
 /src/Services/SensorServer/obj
 /src/Services/SensorServer/Properties/PublishProfiles
+/src/Services/.vs/SensorServer
+/src/Services/SensorServer/.vs/SensorServer
+*.user

@@ -26,6 +26,8 @@ namespace SensorServer.Services
                 await redis.GetDatabase(1).HashSetAsync(
                     $"{sensorId}",
                     data.Where(d=>d.t!=null).Select(d => new HashEntry(d.ts, d.t)).ToArray());
+
+                await redis.GetDatabase(1).StringSetAsync($"{sensorId}:last_value", data.Select(d => d.ts).Max());
             }
             catch(Exception ex)
             {
