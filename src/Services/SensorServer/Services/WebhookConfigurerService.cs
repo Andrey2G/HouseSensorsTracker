@@ -36,7 +36,9 @@ namespace SensorServer.Services
 
             // Remove webhook when service shutdown
             _logger.LogInformation("remove webhook");
-            await botClient.DeleteWebhookAsync(cancellationToken: cancellationToken);
+            //await botClient.DeleteWebhookAsync(cancellationToken: cancellationToken);
+            //botClient.SendTextMessageAsync()
+            await Task.CompletedTask;
         }
     }
 }

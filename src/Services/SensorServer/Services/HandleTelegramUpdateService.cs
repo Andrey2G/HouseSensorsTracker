@@ -69,7 +69,7 @@ namespace SensorServer.Services
 
             var command = message.Text.Substring(botCommand.Offset, botCommand.Length);
             //replace bot usernamne
-            command = command.Replace(await BotUserName(), string.Empty);
+            command = command.Replace(await BotUserName(), string.Empty).Replace("/","");
             var service = _serviceProvider.GetServices<ITgBotCommand>().SingleOrDefault(s => s.Command==command);
             if (service!=null)
             {

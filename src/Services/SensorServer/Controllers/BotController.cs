@@ -4,7 +4,6 @@ using Telegram.Bot.Types;
 
 namespace SensorServer.Controllers
 {
-    [Route("[controller]")]
     public class BotController : ControllerBase
     {
         [HttpPost]
