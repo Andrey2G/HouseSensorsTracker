@@ -36,8 +36,8 @@ namespace SensorServer
             // Add services to the container.
             services.AddSingleton(ConnectionMultiplexer.Connect(Configuration.GetConnectionString("redis")));
 
-            services.AddBotCommands();
             services.AddTransient<ISensorsService, SensorsService>();
+            services.AddBotCommands();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();

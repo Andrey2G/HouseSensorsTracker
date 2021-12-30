@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorServer", "SensorServer\SensorServer.csproj", "{63FC52B7-FCF1-4971-9AA0-44AB887B8E15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorsServer", "SensorServer\SensorsServer.csproj", "{63FC52B7-FCF1-4971-9AA0-44AB887B8E15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

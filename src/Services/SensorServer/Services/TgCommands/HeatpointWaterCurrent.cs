@@ -6,19 +6,20 @@ namespace SensorServer.Services.TgCommands
 {
     public class HeatpointWaterCurrent : ITgBotCommand
     {
-        private readonly ConnectionMultiplexer _redis;
+        private readonly ISensorsService _sensorsService;
 
-        public HeatpointWaterCurrent(ConnectionMultiplexer redis)
+        public HeatpointWaterCurrent(ISensorsService sensorsService)
         {
-            this._redis=redis;
+            this._sensorsService=sensorsService;
         }
         public string Command => "heathpoint_water_current";
 
         public string Description => "Current temperature from sensors in heatpoint of hot water";
 
-        public Task<Message> Execute(ITelegramBotClient botClient, Message message)
+        public async Task<Message> Execute(ITelegramBotClient botClient, Message message)
         {
-            throw new NotImplementedException();
+            string response = await _sensorsService.GetCurrentHeatpointTemperature();
+            return await botClient.SendTextMessageAsync(message.Chat.Id, response);
         }
     }
 }

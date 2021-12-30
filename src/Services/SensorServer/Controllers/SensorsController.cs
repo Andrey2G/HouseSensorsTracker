@@ -10,32 +10,25 @@ namespace SensorServer.Controllers
     public class SensorsController : ControllerBase
     {
         private readonly ISensorsService sensorsService;
-        private readonly ILogger<SensorsController> logger;
+        private readonly ILogger<SensorsController> _logger;
 
         public SensorsController(ISensorsService sensorsService, ILogger<SensorsController> logger)
         {
             this.sensorsService=sensorsService;
-            this.logger=logger;
+            this._logger=logger;
         }
         [HttpGet]
         public ActionResult Index()
         {
+            _logger.LogInformation("sensors->index");
             return Ok("worked");
         }
-
-        //[HttpPost]
-        //[Route("{**catchAll}")]
-        //public async Task <IActionResult> ProcessPostMethod(string catchAll)
-        //{
-        //    logger.LogInformation(catchAll);
-        //    await System.IO.File.AppendAllTextAsync(@"c:\temp\sensors.log", $"{DateTime.UtcNow} {catchAll}\r\n");
-        //    return Ok("Catched!");
-        //}
 
         [HttpPost("{sensorId}")]
 
         public async Task<IActionResult> StoreData(string sensorId)
         {
+            _logger.LogInformation("start storing data for sensor->{sensor_id}", sensorId);
             try
             {
                 using (var stream = Request.Body)
@@ -43,16 +36,15 @@ namespace SensorServer.Controllers
                     using (var reader = new StreamReader(stream))
                     {
                         string body = await reader.ReadToEndAsync();
-                        await System.IO.File.AppendAllTextAsync(@"c:\temp\sensors.log", $"{DateTime.UtcNow} {sensorId} body={body}\r\n");
+                        _logger.LogInformation("{sensor_id} body={body}",sensorId, body);
                         var data = System.Text.Json.JsonSerializer.Deserialize<SensorTemperature[]>(body);
                         if (data!=null)
                         {
-                            await System.IO.File.AppendAllTextAsync(@"c:\temp\sensors.log", $"{DateTime.UtcNow} {sensorId} {System.Text.Json.JsonSerializer.Serialize(data)}\r\n");
                             await sensorsService.StoreSensorData(sensorId, data);
                         }
                         else
                         {
-                            await System.IO.File.AppendAllTextAsync(@"c:\temp\sensors.log", $"{DateTime.UtcNow} {sensorId} NO DATA\r\n");
+                            _logger.LogInformation("{sensor_id} NO DATA", sensorId);
                         }
                     }
 
@@ -60,7 +52,7 @@ namespace SensorServer.Controllers
             }
             catch(Exception ex)
             {
-                await System.IO.File.AppendAllTextAsync(@"c:\temp\sensors.log", $"{DateTime.UtcNow} {sensorId} {ex.Message}\r\n{ex.StackTrace}\r\n");
+                _logger.LogError(ex, "{sensor_id} {error_message}", sensorId, ex.Message);
             }
             return Ok();
         }
