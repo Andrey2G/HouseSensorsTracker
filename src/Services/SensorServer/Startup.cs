@@ -1,5 +1,6 @@
 ﻿using SensorServer.Models;
 using SensorServer.Services;
+using SensorsServer.Services;
 using Serilog;
 using StackExchange.Redis;
 using Telegram.Bot;
@@ -35,7 +36,7 @@ namespace SensorServer
 
             // Add services to the container.
             services.AddSingleton(ConnectionMultiplexer.Connect(Configuration.GetConnectionString("redis")));
-
+            services.AddTransient<IDataContext, DataContext>();
             services.AddTransient<ISensorsService, SensorsService>();
             services.AddBotCommands();
 

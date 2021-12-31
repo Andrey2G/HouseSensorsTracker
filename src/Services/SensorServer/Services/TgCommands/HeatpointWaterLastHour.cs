@@ -3,17 +3,17 @@ using Telegram.Bot.Types;
 
 namespace SensorServer.Services.TgCommands
 {
-    public class HeatpointWaterCurrent : ITgBotCommand
+    public class HeatpointWaterLastHour : ITgBotCommand
     {
         private readonly ISensorsService _sensorsService;
 
-        public HeatpointWaterCurrent(ISensorsService sensorsService)
+        public HeatpointWaterLastHour(ISensorsService sensorsService)
         {
             this._sensorsService=sensorsService;
         }
-        public string Command => "heathpoint_water_current";
+        public string Command => "heathpoint_water_last_hour";
 
-        public string Description => "Current temperature from sensors in heatpoint of hot water";
+        public string Description => "Temperature from sensors in heatpoint of hot water during the last hour";
 
         public async Task<Message> Execute(ITelegramBotClient botClient, Message message)
         {

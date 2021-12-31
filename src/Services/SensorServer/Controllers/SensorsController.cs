@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SensorServer.Models;
-using SensorServer.Services;
+using SensorsServer.Services;
 
 namespace SensorServer.Controllers
 {
@@ -9,12 +8,12 @@ namespace SensorServer.Controllers
     [ApiController]
     public class SensorsController : ControllerBase
     {
-        private readonly ISensorsService sensorsService;
+        private readonly IDataContext dataContext;
         private readonly ILogger<SensorsController> _logger;
 
-        public SensorsController(ISensorsService sensorsService, ILogger<SensorsController> logger)
+        public SensorsController(IDataContext dataContext, ILogger<SensorsController> logger)
         {
-            this.sensorsService=sensorsService;
+            this.dataContext=dataContext;
             this._logger=logger;
         }
         [HttpGet]
@@ -26,9 +25,9 @@ namespace SensorServer.Controllers
 
         [HttpPost("{sensorId}")]
 
-        public async Task<IActionResult> StoreData(string sensorId)
+        public async Task<IActionResult> StoreTemperatureData(string sensorId)
         {
-            _logger.LogInformation("start storing data for sensor->{sensor_id}", sensorId);
+            _logger.LogInformation("start storing data for temperature sensor->{sensor_id}", sensorId);
             try
             {
                 using (var stream = Request.Body)
@@ -37,10 +36,12 @@ namespace SensorServer.Controllers
                     {
                         string body = await reader.ReadToEndAsync();
                         _logger.LogInformation("{sensor_id} body={body}",sensorId, body);
-                        var data = System.Text.Json.JsonSerializer.Deserialize<SensorTemperature[]>(body);
+                        var data = System.Text.Json.JsonSerializer.Deserialize<SensorValue[]>(body);
                         if (data!=null)
                         {
-                            await sensorsService.StoreSensorData(sensorId, data);
+                            //TODO: prefix should be a constant
+                            var id = await dataContext.GetSensor(sensorId, sensorId.Substring(0, 3));
+                            await dataContext.AddSensorValues(id, data);
                         }
                         else
                         {

@@ -6,8 +6,9 @@ namespace SensorServer.Services
 {
     public interface ISensorsService
     {
-        Task StoreSensorData(string sensorId, SensorTemperature[] data);
+        Task StoreSensorData(string sensorId, SensorValue[] data);
         Task<string> GetCurrentHeatpointTemperature();
+        Task<string> GetLastHourHeatpointTemperature();
     }
 
     public class SensorsService : ISensorsService
@@ -21,7 +22,7 @@ namespace SensorServer.Services
             this._logger=logger;
         }
 
-        public async Task StoreSensorData(string sensorId, SensorTemperature[] data)
+        public async Task StoreSensorData(string sensorId, SensorValue[] data)
         {
             _logger.LogInformation("SensorService->StoreSensorData=>{sensor_id} {@data}", sensorId, data);
             try
@@ -29,9 +30,9 @@ namespace SensorServer.Services
                 await _redis.GetDatabase().SetAddAsync("sensors", sensorId);
                 await _redis.GetDatabase().HashSetAsync(
                     $"{sensorId}",
-                    data.Where(d=>d.t!=null).Select(d => new HashEntry(d.ts, d.t)).ToArray());
+                    data.Where(d=>d.v!=null).Select(d => new HashEntry(d.ts, d.v)).ToArray());
 
-                await _redis.GetDatabase().StringSetAsync($"{sensorId}:last_value", data.Where(d => d.t!=null).Select(d => d.ts).Max());
+                await _redis.GetDatabase().StringSetAsync($"{sensorId}:last_value", data.Where(d => d.v!=null).Select(d => d.ts).Max());
             }
             catch(Exception ex)
             {
@@ -94,6 +95,33 @@ namespace SensorServer.Services
                 foreach (var sensor in sensors.Keys)
                 {
                     _logger.LogInformation("SensorService->GetCurrentHeatpointTemperature->next sensor {sensor}",sensor);
+                    var lastKey = await _redis.GetDatabase().StringGetAsync($"{sensor}:last_value");
+                    _logger.LogInformation("SensorService->GetCurrentHeatpointTemperature->{sensor} last key at {sensor_timestamp}", sensor, lastKey);
+                    if (string.IsNullOrEmpty(lastKey)) continue;
+                    var lastValue = await _redis.GetDatabase().HashGetAsync($"{sensor}", lastKey);
+                    _logger.LogInformation("SensorService->GetCurrentHeatpointTemperature->{sensor} last key at {sensor_timestamp} with value={value}", sensor, lastKey, lastValue);
+
+                    result.AppendLine($"{sensors[sensor]}: {double.Parse(lastValue).ToString("F1")}°C at {DateTimeOffset.FromUnixTimeSeconds(long.Parse(lastKey)).ToString("dd.MM.yyyy HH:mm")}");
+                }
+                return result.ToString();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "SensorService->GetCurrentHeatpointTemperature FAILED");
+            }
+            return "NO DATA";
+        }
+
+        public async Task<string> GetLastHourHeatpointTemperature()
+        {
+            _logger.LogInformation("SensorService->GetLastHourHeatpointTemperature");
+            StringBuilder result = new StringBuilder();
+            try
+            {
+                var sensors = await GetTemperatureSensorsWithNames();
+                foreach (var sensor in sensors.Keys)
+                {
+                    _logger.LogInformation("SensorService->GetCurrentHeatpointTemperature->next sensor {sensor}", sensor);
                     var lastKey = await _redis.GetDatabase().StringGetAsync($"{sensor}:last_value");
                     _logger.LogInformation("SensorService->GetCurrentHeatpointTemperature->{sensor} last key at {sensor_timestamp}", sensor, lastKey);
                     if (string.IsNullOrEmpty(lastKey)) continue;

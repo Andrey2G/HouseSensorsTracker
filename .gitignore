@@ -136,3 +136,4 @@ dmypy.json
 /src/Services/.vs/SensorServer
 /src/Services/SensorServer/.vs/SensorServer
 *.user
+/.vscode
