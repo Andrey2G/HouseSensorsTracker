@@ -134,5 +134,29 @@ namespace SensorsServer.Services
             }
             return qty;
         }
+
+        public async Task<IEnumerable<SensorValue>> GetSensorValues(int sensorId, long sinceTimestamp)
+        {
+            _logger.LogInformation("DataContext->GetSensorsValues for {sensor_id} since {since}", sensorId, sinceTimestamp);
+            using var cn = new MySql.Data.MySqlClient.MySqlConnection(connectionString);
+            cn.Open();
+
+            return await cn.QueryAsync<SensorValue>("SELECT DISTINCT sensor_id, scanned_at as ts, value as v, MAX(added_at) as added_at FROM sensors_values WHERE sensor_id=@id AND scanned_at>=@since GROUP BY 1,2,3 ORDER BY 2", new { id = sensorId, since = sinceTimestamp });
+        }
+
+        public async Task<Dictionary<int,SensorValue[]?>> GetSensorsValues(int[] sensorIds, long sinceTimestamp)
+        {
+            _logger.LogInformation("DataContext->GetSensorsValues for {sensorIds} since {since}", sensorIds, sinceTimestamp);
+            var results=new Dictionary<int, SensorValue[]?>();
+            //TODO: make it in one request!
+            //don't care at the moment about the performance
+            //just make it working quickly
+            foreach (var sensorId in sensorIds)
+            {
+                var values = await GetSensorValues(sensorId, sinceTimestamp);
+                results[sensorId]=values?.ToArray();
+            }
+            return results;
+        }
     }
 }

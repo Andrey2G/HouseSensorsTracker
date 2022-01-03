@@ -10,12 +10,12 @@ namespace SensorServer.Controllers
     [ApiController]
     public class SensorsController : ControllerBase
     {
-        private readonly ISensorsService sensorsService;
+        private readonly ISensorsService _sensorsService;
         private readonly ILogger<SensorsController> _logger;
 
         public SensorsController(ISensorsService sensorsService, ILogger<SensorsController> logger)
         {
-            this.sensorsService=sensorsService;
+            this._sensorsService=sensorsService;
             this._logger=logger;
         }
         [HttpGet]
@@ -23,6 +23,46 @@ namespace SensorServer.Controllers
         {
             _logger.LogInformation("sensors->index");
             return Ok("worked");
+        }
+
+        [HttpGet]
+        [Route("temperature-last-hour")]
+        public async Task<ActionResult> TemperatureLastHour()
+        {
+            _logger.LogInformation("sensors->temperature-last-hour");
+            var values = await _sensorsService.GetLastHourTemperature();
+            var rows = new List<object>();
+
+            var row = new List<object>();
+            row.Add("time");
+            foreach (var k in values.Keys)
+                row.Add(k.description);
+            rows.Add(row);
+
+            var firstKey = values.Keys.FirstOrDefault();
+            if (firstKey!=null)
+            {
+                var firstKeyValues = values[firstKey];
+                if (firstKeyValues!=null)
+                    foreach (var value in firstKeyValues)
+                    {
+                        var ts = value.ts;
+                        row = new List<object>();
+                        row.Add(DateTimeOffset.FromUnixTimeSeconds(ts).ToLocalTime().ToString("HH:mm"));
+                        foreach (var c in values.Keys)
+                        {
+                            if (c.id!=firstKey.id)
+                            {
+                                //find nearest timestamp
+                                var v = values[c]?.Where(v => v.ts>=ts-30 && v.ts<=ts+30).FirstOrDefault();
+                                row.Add(v?.v);
+                            }
+                            else row.Add(value.v);
+                        }
+                        rows.Add(row);
+                    }
+            }
+            return new JsonResult(rows);
         }
 
         [HttpPost("{sensorId}")]
@@ -41,7 +81,7 @@ namespace SensorServer.Controllers
                         var data = System.Text.Json.JsonSerializer.Deserialize<SensorValue[]>(body);
                         if (data!=null)
                         {
-                            await sensorsService.StoreSensorData(sensorId, data);
+                            await _sensorsService.StoreSensorData(sensorId, data);
                         }
                         else
                         {
@@ -74,7 +114,7 @@ namespace SensorServer.Controllers
                         var data = System.Text.Json.JsonSerializer.Deserialize<HumidityModel>(body);
                         if (data!=null)
                         {
-                            await sensorsService.StoreHumidityData(data);
+                            await _sensorsService.StoreHumidityData(data);
                         }
                         else
                         {
@@ -107,7 +147,7 @@ namespace SensorServer.Controllers
                         var data = System.Text.Json.JsonSerializer.Deserialize<BarometerModel>(body);
                         if (data!=null)
                         {
-                            await sensorsService.StoreBarometerData(data);
+                            await _sensorsService.StoreBarometerData(data);
                         }
                         else
                         {

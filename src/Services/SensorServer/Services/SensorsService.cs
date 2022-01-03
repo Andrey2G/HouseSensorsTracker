@@ -15,6 +15,7 @@ namespace SensorServer.Services
         Task StoreBarometerData(BarometerModel data);
         Task<string> GetCurrentHeatpointHumidity();
         Task<string> GetCurrentHeatpointPressure();
+        Task<Dictionary<SensorViewModel, SensorValue[]?>> GetLastHourTemperature();
     }
 
     public class SensorsService : ISensorsService
@@ -289,6 +290,33 @@ namespace SensorServer.Services
                 _logger.LogError(ex, "SensorService->GetCurrentHeatpointPressure FAILED");
             }
             return "NO DATA";
+        }
+
+        public async Task<Dictionary<SensorViewModel,SensorValue[]?>> GetLastHourTemperature()
+        {
+            _logger.LogInformation("SensorService->GetLastHourTemperature");
+            var result = new Dictionary<SensorViewModel, SensorValue[]?>();
+            try
+            {
+                var temperatureSensors = await GetTemperatureSensors();
+                if (temperatureSensors!=null)
+                {
+                    var values = await _dataContext.GetSensorsValues(temperatureSensors.Select(s => s.id).ToArray(), DateTimeOffset.UtcNow.ToUnixTimeSeconds()-60*60);
+                    foreach(var key in values.Keys)
+                    {
+                        var k = temperatureSensors.Where(s => s.id==key).FirstOrDefault();
+                        if (k!=null)
+                        {
+                            result[k]=values[key];
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "SensorService->GetLastHourTemperature FAILED");
+            }
+            return result;
         }
     }
 }

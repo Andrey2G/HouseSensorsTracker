@@ -1,0 +1,57 @@
+﻿@page
+@model SensorsServer.Pages.TemperatureChartsModel
+@{
+}
+
+<html>
+    <head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+	google.charts.load('current', {packages: ['corechart', 'line']});
+google.charts.setOnLoadCallback(loadData);
+
+function loadData() {
+      $.ajax({  
+  
+            url: '/api/sensors/temperature-last-hour',  
+            dataType: "json",  
+            type: "GET",  
+            error: function(xhr, status, error) {  
+                var err = eval("(" + xhr.responseText + ")");  
+                toastr.error(err.message);  
+            },  
+            success: function(data) {  
+                drawChart(data);  
+                return false;  
+            }  
+        });  
+        return false;  
+    }
+
+    function drawChart(temperatureData) {  
+        var data = google.visualization.arrayToDataTable(temperatureData);  
+        var options = {  
+            title: 'Sensors Temperature during Last Hour',  
+            chartArea: {  
+                
+            },  
+            hAxis: {  
+                title: 'Time'
+            },  
+            vAxis: {  
+                title: 'Temperature'
+            }  
+        };  
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));  
+  
+        chart.draw(data, options);  
+        return false;  
+    }  
+</script>      
+
+</head>
+<body>
+  <div id="chart_div" style="width: 100%; height: 500px;"></div>
+  </body>
+</html>

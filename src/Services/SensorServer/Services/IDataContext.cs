@@ -12,5 +12,7 @@ namespace SensorsServer.Services
         Task<IEnumerable<SensorViewModel>> GetSensors();
         Task<int> GetSensorType(string prefix);
         Task<int> UpdateSensorType(string prefix, string name);
+        Task<IEnumerable<SensorValue>> GetSensorValues(int sensorId, long sinceTimestamp);
+        Task<Dictionary<int, SensorValue[]?>> GetSensorsValues(int[] sensorIds, long sinceTimestamp);
     }
 }

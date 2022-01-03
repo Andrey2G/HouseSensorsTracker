@@ -69,6 +69,7 @@ namespace SensorServer
             //   https://docs.microsoft.com/en-us/aspnet/core/web-api/advanced/formatting?view=aspnetcore-5.0#add-newtonsoftjson-based-json-format-support
             services.AddControllers()
                     .AddNewtonsoftJson();
+            services.AddRazorPages();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -96,7 +97,10 @@ namespace SensorServer
                                              pattern: $"bot/{token}",
                                              new { controller = "Bot", action = "Post" });
                 endpoints.MapControllers();
+                endpoints.MapRazorPages();
             });
+
+            
         }
     }
 }

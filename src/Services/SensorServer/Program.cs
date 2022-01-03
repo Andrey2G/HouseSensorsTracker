@@ -1,5 +1,6 @@
 using SensorServer;
 using Serilog;
+using System.Reflection;
 
 Host.CreateDefaultBuilder(args)
            .ConfigureWebHostDefaults(webBuilder =>
@@ -9,6 +10,7 @@ Host.CreateDefaultBuilder(args)
            .ConfigureAppConfiguration((context, config) =>
            {
                config.AddJsonFile("appsettings.json");
+               config.AddUserSecrets(Assembly.GetExecutingAssembly());
            })
            .Build().Run();
 
