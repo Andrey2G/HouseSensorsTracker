@@ -93,6 +93,28 @@ sudo apt-get install build-essential python-dev
 sudo python3 setup.py install
 ```
 
+To use Barometer sensor (BMP180) need to setup I2C bus
+```console
+sudo nano /etc/modules
+```
+
+Add the following lines
+```console
+i2c-bcm2708
+i2c-dev
+```
+
+Enable I2C and reboot
+```console
+sudo raspi-config
+Interface Options->P5 I2C->Enable->Yes
+sudo reboot
+```
+
+
+
+
+
 ## RRD Tool
 
 [About RRD Tool](https://www.mrtg.org/rrdtool/)

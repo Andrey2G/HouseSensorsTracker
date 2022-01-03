@@ -51,5 +51,8 @@ INSERT INTO `sensors` (`id`, `type`, `name`, `description`) VALUES ('4', '1', '2
 INSERT INTO `sensors` (`id`, `type`, `name`, `description`) VALUES ('5', '1', '28-012112665040', 'Sensor5');
 INSERT INTO `sensors` (`id`, `type`, `name`, `description`) VALUES ('6', '2', 'dht11-t', 'Humiture - temperature');
 INSERT INTO `sensors` (`id`, `type`, `name`, `description`) VALUES ('7', '2', 'dht11-h', 'Humiture - humidity');
-INSERT INTO `sensors` (`id`, `type`, `name`, `description`) VALUES ('8', '3', 'bmp180', 'Barometer');
+INSERT INTO `sensors` (`id`, `type`, `name`, `description`) VALUES ('8', '3', 'bmp180-t', 'Barometer-Temperature');
+INSERT INTO `sensors` (`id`, `type`, `name`, `description`) VALUES ('9', '3', 'bmp180-p', 'Barometer-Pressure');
+INSERT INTO `sensors` (`id`, `type`, `name`, `description`) VALUES ('10', '3', 'bmp180-a', 'Barometer-Altitude');
+
 

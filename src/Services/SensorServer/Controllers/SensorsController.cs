@@ -90,5 +90,38 @@ namespace SensorServer.Controllers
             }
             return Ok();
         }
+
+        [HttpPost]
+        [Route("barometer")]
+        public async Task<IActionResult> Barometer()
+        {
+            _logger.LogInformation("start storing data for Barometer sensor");
+            try
+            {
+                using (var stream = Request.Body)
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        string body = await reader.ReadToEndAsync();
+                        _logger.LogInformation("Barometer body={body}", body);
+                        var data = System.Text.Json.JsonSerializer.Deserialize<BarometerModel>(body);
+                        if (data!=null)
+                        {
+                            await sensorsService.StoreBarometerData(data);
+                        }
+                        else
+                        {
+                            _logger.LogInformation("Barometer NO DATA");
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Barometer {error_message}", ex.Message);
+            }
+            return Ok();
+        }
     }
 }

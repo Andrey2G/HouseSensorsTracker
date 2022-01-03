@@ -12,7 +12,9 @@ namespace SensorServer.Services
         Task<string> GetCurrentHeatpointTemperature();
         Task<string> GetLastHourHeatpointTemperature();
         Task StoreHumidityData(HumidityModel data);
+        Task StoreBarometerData(BarometerModel data);
         Task<string> GetCurrentHeatpointHumidity();
+        Task<string> GetCurrentHeatpointPressure();
     }
 
     public class SensorsService : ISensorsService
@@ -65,33 +67,115 @@ namespace SensorServer.Services
             _logger.LogInformation("SensorService->StoreSensorData=>{@humidity_data}", data);
             try
             {
-                await _redis.GetDatabase().SetAddAsync("sensors", "dht11-t");
-                //TODO: prefix should be a constant
-                var id = await _dataContext.GetSensor("dht11-t", "dht11-");
-                if (data.humidity!=null)
-                {
-                    await _dataContext.AddSensorValues(id, data.humidity);
-                    var lastNonemptyTimestamp = data.humidity.Where(d => d.v!=null).Select(d => d.ts).Max();
-                    await _redis.GetDatabase().StringSetAsync($"dht11-h:last_value_ts", lastNonemptyTimestamp);
-                    var lastNonEmptyValue = data.humidity.Where(d => d.ts==lastNonemptyTimestamp).Select(d => d.v).FirstOrDefault();
-                    await _redis.GetDatabase().StringSetAsync($"dht11-h:last_value", lastNonEmptyValue);
-                }
-
                 await _redis.GetDatabase().SetAddAsync("sensors", "dht11-h");
                 //TODO: prefix should be a constant
-                id = await _dataContext.GetSensor("dht11-h", "dht11-");
+                var id = await _dataContext.GetSensor("dht11-h", "dht11-");
+                if (data.humidity!=null)
+                {
+                    if (data.humidity.Where(d => d.v!=null).FirstOrDefault()==null)
+                    {
+                        _logger.LogWarning("SensorService->StoreHumidityData=>Humidity DATA EXISTS BUT ALL EMPTY");
+                    }
+                    else
+                    {
+                        await _dataContext.AddSensorValues(id, data.humidity);
+                        var lastNonemptyTimestamp = data.humidity.Where(d => d.v!=null).Select(d => d.ts).Max();
+                        await _redis.GetDatabase().StringSetAsync($"dht11-h:last_value_ts", lastNonemptyTimestamp);
+                        var lastNonEmptyValue = data.humidity.Where(d => d.ts==lastNonemptyTimestamp).Select(d => d.v).FirstOrDefault();
+                        await _redis.GetDatabase().StringSetAsync($"dht11-h:last_value", lastNonEmptyValue);
+                    }
+                }
+
+                await _redis.GetDatabase().SetAddAsync("sensors", "dht11-t");
+                //TODO: prefix should be a constant
+                id = await _dataContext.GetSensor("dht11-t", "dht11-");
                 if (data.temperature!=null)
                 {
-                    await _dataContext.AddSensorValues(id, data.temperature);
-                    var lastNonemptyTimestamp = data.temperature.Where(d => d.v!=null).Select(d => d.ts).Max();
-                    await _redis.GetDatabase().StringSetAsync($"dht11-t:last_value_ts", lastNonemptyTimestamp);
-                    var lastNonEmptyValue = data.temperature.Where(d => d.ts==lastNonemptyTimestamp).Select(d => d.v).FirstOrDefault();
-                    await _redis.GetDatabase().StringSetAsync($"dht11-t:last_value", lastNonEmptyValue);
+                    if (data.temperature.Where(d => d.v!=null).FirstOrDefault()==null)
+                    {
+                        _logger.LogWarning("SensorService->StoreHumidityData=>Temperature DATA EXISTS BUT ALL EMPTY");
+                    }
+                    else
+                    {
+                        await _dataContext.AddSensorValues(id, data.temperature);
+                        var lastNonemptyTimestamp = data.temperature.Where(d => d.v!=null).Select(d => d.ts).Max();
+                        await _redis.GetDatabase().StringSetAsync($"dht11-t:last_value_ts", lastNonemptyTimestamp);
+                        var lastNonEmptyValue = data.temperature.Where(d => d.ts==lastNonemptyTimestamp).Select(d => d.v).FirstOrDefault();
+                        await _redis.GetDatabase().StringSetAsync($"dht11-t:last_value", lastNonEmptyValue);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "SensorService->StoreHumidityData FAILED");
+            }
+        }
+
+        public async Task StoreBarometerData(BarometerModel data)
+        {
+            _logger.LogInformation("SensorService->StoreBarometerData=>{@barometer_data}", data);
+            try
+            {
+                await _redis.GetDatabase().SetAddAsync("sensors", "bmp180-p");
+                //TODO: prefix should be a constant
+                var id = await _dataContext.GetSensor("bmp180-p", "bmp180-");
+                if (data.pressure!=null)
+                {
+                    if (data.pressure.Where(d => d.v!=null).FirstOrDefault()==null)
+                    {
+                        _logger.LogWarning("SensorService->StoreBarometerData=>Pressure DATA EXISTS BUT ALL EMPTY");
+                    }
+                    else
+                    {
+                        await _dataContext.AddSensorValues(id, data.pressure);
+                        var lastNonemptyTimestamp = data.pressure.Where(d => d.v!=null).Select(d => d.ts).Max();
+                        await _redis.GetDatabase().StringSetAsync($"bmp180-p:last_value_ts", lastNonemptyTimestamp);
+                        var lastNonEmptyValue = data.pressure.Where(d => d.ts==lastNonemptyTimestamp).Select(d => d.v).FirstOrDefault();
+                        await _redis.GetDatabase().StringSetAsync($"bmp180-p:last_value", lastNonEmptyValue);
+                    }
+                }
+
+                await _redis.GetDatabase().SetAddAsync("sensors", "bmp180-t");
+                //TODO: prefix should be a constant
+                id = await _dataContext.GetSensor("bmp180-t", "bmp180-");
+                if (data.temperature!=null)
+                {
+                    if (data.temperature.Where(d => d.v!=null).FirstOrDefault()==null)
+                    {
+                        _logger.LogWarning("SensorService->StoreBarometerData=>Temperature DATA EXISTS BUT ALL EMPTY");
+                    }
+                    else
+                    {
+                        await _dataContext.AddSensorValues(id, data.temperature);
+                        var lastNonemptyTimestamp = data.temperature.Where(d => d.v!=null).Select(d => d.ts).Max();
+                        await _redis.GetDatabase().StringSetAsync($"bmp180-t:last_value_ts", lastNonemptyTimestamp);
+                        var lastNonEmptyValue = data.temperature.Where(d => d.ts==lastNonemptyTimestamp).Select(d => d.v).FirstOrDefault();
+                        await _redis.GetDatabase().StringSetAsync($"bmp180-t:last_value", lastNonEmptyValue);
+                    }
+                }
+
+                await _redis.GetDatabase().SetAddAsync("sensors", "bmp180-a");
+                //TODO: prefix should be a constant
+                id = await _dataContext.GetSensor("bmp180-a", "bmp180-");
+                if (data.altitude!=null)
+                {
+                    if (data.altitude.Where(d => d.v!=null).FirstOrDefault()==null)
+                    {
+                        _logger.LogWarning("SensorService->StoreBarometerData=>Altitude DATA EXISTS BUT ALL EMPTY");
+                    }
+                    else
+                    {
+                        await _dataContext.AddSensorValues(id, data.altitude);
+                        var lastNonemptyTimestamp = data.altitude.Where(d => d.v!=null).Select(d => d.ts).Max();
+                        await _redis.GetDatabase().StringSetAsync($"bmp180-a:last_value_ts", lastNonemptyTimestamp);
+                        var lastNonEmptyValue = data.altitude.Where(d => d.ts==lastNonemptyTimestamp).Select(d => d.v).FirstOrDefault();
+                        await _redis.GetDatabase().StringSetAsync($"bmp180-a:last_value", lastNonEmptyValue);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "SensorService->StoreBarometerData FAILED");
             }
         }
 
@@ -131,7 +215,7 @@ namespace SensorServer.Services
                     var lastValue = await _redis.GetDatabase().StringGetAsync($"{sensor}:last_value");
                     _logger.LogInformation("SensorService->GetCurrentHeatpointTemperature->{sensor} last key at {sensor_timestamp} with value={value}", sensor, timestamp, lastValue);
 
-                    result.AppendLine($"{s.description}: {double.Parse(lastValue).ToString("F1")}°C at {DateTimeOffset.FromUnixTimeSeconds(long.Parse(timestamp)).ToString("dd.MM.yyyy HH:mm")}");
+                    result.AppendLine($"{s.description}: {double.Parse(lastValue).ToString("F1")}°C at {DateTimeOffset.FromUnixTimeSeconds(long.Parse(timestamp)).ToLocalTime().ToString("dd.MM.yyyy HH:mm")}");
                 }
                 return result.ToString();
             }
@@ -175,12 +259,34 @@ namespace SensorServer.Services
                 var lastValue = await _redis.GetDatabase().StringGetAsync($"dht11-h:last_value");
                 _logger.LogInformation("SensorService->GetCurrentHeatpointHumidity->last value {value} at {sensor_timestamp}", lastValue, timestamp);
 
-                result.AppendLine($"Humidity: {double.Parse(lastValue).ToString("F1")}% at {DateTimeOffset.FromUnixTimeSeconds(long.Parse(timestamp)).ToString("dd.MM.yyyy HH:mm")}");
+                result.AppendLine($"Humidity: {double.Parse(lastValue).ToString("F1")}% at {DateTimeOffset.FromUnixTimeSeconds(long.Parse(timestamp)).ToLocalTime().ToString("dd.MM.yyyy HH:mm")}");
                 return result.ToString();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "SensorService->GetCurrentHeatpointHumidity FAILED");
+            }
+            return "NO DATA";
+        }
+
+        public async Task<string> GetCurrentHeatpointPressure()
+        {
+            _logger.LogInformation("SensorService->GetCurrentHeatpointPressure");
+            StringBuilder result = new StringBuilder();
+            try
+            {
+                var timestamp = await _redis.GetDatabase().StringGetAsync($"bmp180-p:last_value_ts");
+                _logger.LogInformation("SensorService->GetCurrentHeatpointPressure->last key at {sensor_timestamp}", timestamp);
+
+                var lastValue = await _redis.GetDatabase().StringGetAsync($"bmp180-p:last_value");
+                _logger.LogInformation("SensorService->GetCurrentHeatpointPressure->last value {value} at {sensor_timestamp}", lastValue, timestamp);
+
+                result.AppendLine($"Pressure: {double.Parse(lastValue).ToString("F2")}hPa at {DateTimeOffset.FromUnixTimeSeconds(long.Parse(timestamp)).ToLocalTime().ToString("dd.MM.yyyy HH:mm")}");
+                return result.ToString();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "SensorService->GetCurrentHeatpointPressure FAILED");
             }
             return "NO DATA";
         }
