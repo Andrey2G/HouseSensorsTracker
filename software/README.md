@@ -51,7 +51,9 @@ Click on Write to write the image to the selected SD card
 
 Boot the system, and enable the One-Wire interface (Check more details about it [here](https://pinout.xyz/pinout/1_wire))
 
+```console
 sudo nano /boot/config.txt
+```
 
 and add this to the bottom of the file:
 
@@ -59,17 +61,37 @@ dtoverlay=w1-gpio
 
 Exit Nano with saving changes and reboot
 
+```console
 sudo reboot
+```
 
 Now enable modules w1-gpio and w1-therm
 
+```console
 sudo modprobe w1-gpio
-
 sudo modprobe w1-therm
+```
 
 Now you will be able to see your temperarure sensor(s)
 
+```console
 ls /sys/bus/w1/devices
+```
+
+To work with GPIO from Python need to install RPi.GPIO
+```console
+sudo apt-get update
+sudo apt-get install python3-rpi.gpio
+sudo pip3 install RPi.GPIO
+```
+
+To use DHT11 sensor (humiture & temperature module) need to install Adafruit library
+```console
+git clone https://github.com/adafruit/Adafruit_Python_DHT.git
+cd Adafruit_Python_DHT
+sudo apt-get install build-essential python-dev
+sudo python3 setup.py install
+```
 
 ## RRD Tool
 
@@ -77,14 +99,19 @@ ls /sys/bus/w1/devices
 
 Install dependencies (see more details [here](https://pythonhosted.org/rrdtool/install.html#debian-ubuntu))
 
+```console
 sudo apt-get install librrd-dev libpython3-dev
+```
 
 Install PIP
 
+```console
 sudo apt-get install pip
+```
 
 Install RDD Tool
 
+```console
 sudo apt-get install rrdtool
-
 sudo pip install rrdtool
+```

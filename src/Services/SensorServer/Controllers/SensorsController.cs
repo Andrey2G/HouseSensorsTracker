@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using SensorServer.Models;
-using SensorsServer.Services;
+using SensorServer.Services;
+using SensorsServer.Models;
 
 namespace SensorServer.Controllers
 {
@@ -8,12 +10,12 @@ namespace SensorServer.Controllers
     [ApiController]
     public class SensorsController : ControllerBase
     {
-        private readonly IDataContext dataContext;
+        private readonly ISensorsService sensorsService;
         private readonly ILogger<SensorsController> _logger;
 
-        public SensorsController(IDataContext dataContext, ILogger<SensorsController> logger)
+        public SensorsController(ISensorsService sensorsService, ILogger<SensorsController> logger)
         {
-            this.dataContext=dataContext;
+            this.sensorsService=sensorsService;
             this._logger=logger;
         }
         [HttpGet]
@@ -25,9 +27,9 @@ namespace SensorServer.Controllers
 
         [HttpPost("{sensorId}")]
 
-        public async Task<IActionResult> StoreTemperatureData(string sensorId)
+        public async Task<IActionResult> StoreData(string sensorId)
         {
-            _logger.LogInformation("start storing data for temperature sensor->{sensor_id}", sensorId);
+            _logger.LogInformation("start storing data for sensor->{sensor_id}", sensorId);
             try
             {
                 using (var stream = Request.Body)
@@ -39,9 +41,7 @@ namespace SensorServer.Controllers
                         var data = System.Text.Json.JsonSerializer.Deserialize<SensorValue[]>(body);
                         if (data!=null)
                         {
-                            //TODO: prefix should be a constant
-                            var id = await dataContext.GetSensor(sensorId, sensorId.Substring(0, 3));
-                            await dataContext.AddSensorValues(id, data);
+                            await sensorsService.StoreSensorData(sensorId, data);
                         }
                         else
                         {
@@ -54,6 +54,39 @@ namespace SensorServer.Controllers
             catch(Exception ex)
             {
                 _logger.LogError(ex, "{sensor_id} {error_message}", sensorId, ex.Message);
+            }
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("humiture")]
+        public async Task<IActionResult> Humiture()
+        {
+            _logger.LogInformation("start storing data for Humiture sensor");
+            try
+            {
+                using (var stream = Request.Body)
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        string body = await reader.ReadToEndAsync();
+                        _logger.LogInformation("Humidity body={body}", body);
+                        var data = System.Text.Json.JsonSerializer.Deserialize<HumidityModel>(body);
+                        if (data!=null)
+                        {
+                            await sensorsService.StoreHumidityData(data);
+                        }
+                        else
+                        {
+                            _logger.LogInformation("Humiture NO DATA");
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Humiture {error_message}", ex.Message);
             }
             return Ok();
         }

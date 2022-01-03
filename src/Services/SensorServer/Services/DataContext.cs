@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
 using SensorServer.Models;
+using SensorsServer.Models;
 
 namespace SensorsServer.Services
 {
@@ -94,6 +95,18 @@ namespace SensorsServer.Services
                 sensorId=await AddSensor(prefix, name, prefix);
             }
             return (int)sensorId;
+        }
+
+        /// <summary>
+        /// get all awailable sensors with their types details
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<SensorViewModel>> GetSensors()
+        {
+            _logger.LogInformation("DataContext->GetSensors");
+            using var cn = new MySql.Data.MySqlClient.MySqlConnection(connectionString);
+            cn.Open();
+            return await cn.QueryAsync<SensorViewModel>("SELECT s.id, s.name, s.description, st.name as type, st.prefix FROM sensors s INNER JOIN sensor_types st ON st.id=s.type");
         }
 
         /// <summary>

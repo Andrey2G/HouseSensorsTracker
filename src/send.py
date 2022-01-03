@@ -6,7 +6,7 @@ import json
 
 
 def send_data(sensor, payload):
-    result = requests.post('http://localhost:8088/sensors/api/sensors/'+sensor,data=json.dumps(payload))
+    result = requests.post('http://localhost:8088/api/sensors/'+sensor,data=json.dumps(payload))
     print("sensor=",sensor,"data=",payload,"send result=",result)
 
 
