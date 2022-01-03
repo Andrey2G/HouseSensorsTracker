@@ -10,7 +10,7 @@ Host.CreateDefaultBuilder(args)
            .ConfigureAppConfiguration((context, config) =>
            {
                config.AddJsonFile("appsettings.json");
-               config.AddUserSecrets(Assembly.GetExecutingAssembly());
+               config.AddUserSecrets(Assembly.GetExecutingAssembly(),true);
            })
            .Build().Run();
 
