@@ -18,6 +18,10 @@ namespace SensorServer.Services.TgCommands
                                  "/heathpoint_humidity_current - Current humidity value at the heatpoint of hot water\n" +
                                  "/heathpoint_pressure_current - Current pressure value at the heatpoint of hot water\n" +
                                  "/heathpoint_temperature_last_hour - Chart with Temperature of sensors during the last hour\n" +
+                                 "/heathpoint_temperature_last_3h - Chart with Temperature of sensors during the last 3 hours\n" +
+                                 "/heathpoint_temperature_last_6h - Chart with Temperature of sensors during the last 6 hours\n" +
+                                 "/heathpoint_temperature_last_12h - Chart with Temperature of sensors during the last 12 hours\n" +
+                                 "/heathpoint_temperature_last_24h - Chart with Temperature of sensors during the last day\n" +
                                  //"/heathpoint_water_avg_hour - Avarage temperature from sensors in heatpoint of hot water during the last hour\n" +
                                  //"/heathpoint_water_avg_day - Avarage temperature from sensors in heatpoint of hot water during the last day\n" +
                                  //"/heathpoint_water_avg_week - Avarage temperature from sensors in heatpoint of hot water during the last week\n" +

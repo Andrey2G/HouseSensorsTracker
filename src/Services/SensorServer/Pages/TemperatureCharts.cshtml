@@ -14,7 +14,7 @@ google.charts.setOnLoadCallback(loadData);
 function loadData() {
       $.ajax({  
   
-            url: '/api/sensors/temperature-last-hour',  
+            url: '/api/sensors/temperatures/24',  
             dataType: "json",  
             type: "GET",  
             error: function(xhr, status, error) {  
@@ -32,7 +32,7 @@ function loadData() {
     function drawChart(temperatureData) {  
         var data = google.visualization.arrayToDataTable(temperatureData);  
         var options = {  
-            title: 'Sensors Temperature during Last Hour',  
+            title: 'Sensors Temperature during 24h',  
             chartArea: {  
                 
             },  

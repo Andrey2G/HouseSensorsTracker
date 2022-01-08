@@ -15,7 +15,7 @@ namespace SensorServer.Services
         Task StoreBarometerData(BarometerModel data);
         Task<string> GetCurrentHeatpointHumidity();
         Task<string> GetCurrentHeatpointPressure();
-        Task<Dictionary<SensorViewModel, SensorValue[]?>> GetLastHourTemperature();
+        Task<Dictionary<SensorViewModel, SensorValue[]?>> GetTemperatures(int hours);
     }
 
     public class SensorsService : ISensorsService
@@ -292,7 +292,7 @@ namespace SensorServer.Services
             return "NO DATA";
         }
 
-        public async Task<Dictionary<SensorViewModel,SensorValue[]?>> GetLastHourTemperature()
+        public async Task<Dictionary<SensorViewModel,SensorValue[]?>> GetTemperatures(int hours)
         {
             _logger.LogInformation("SensorService->GetLastHourTemperature");
             var result = new Dictionary<SensorViewModel, SensorValue[]?>();
@@ -301,7 +301,7 @@ namespace SensorServer.Services
                 var temperatureSensors = await GetTemperatureSensors();
                 if (temperatureSensors!=null)
                 {
-                    var values = await _dataContext.GetSensorsValues(temperatureSensors.Select(s => s.id).ToArray(), DateTimeOffset.UtcNow.ToUnixTimeSeconds()-60*60);
+                    var values = await _dataContext.GetSensorsValues(temperatureSensors.Select(s => s.id).ToArray(), DateTimeOffset.UtcNow.ToUnixTimeSeconds()-hours*60*60);
                     foreach(var key in values.Keys)
                     {
                         var k = temperatureSensors.Where(s => s.id==key).FirstOrDefault();

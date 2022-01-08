@@ -82,6 +82,8 @@ namespace SensorServer
                 app.UseSwaggerUI();
             }
 
+            app.UseStaticFiles();
+
             app.UseRouting();
             app.UseCors();
 

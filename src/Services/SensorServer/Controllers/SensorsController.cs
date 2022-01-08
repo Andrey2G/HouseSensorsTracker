@@ -26,11 +26,11 @@ namespace SensorServer.Controllers
         }
 
         [HttpGet]
-        [Route("temperature-last-hour")]
-        public async Task<ActionResult> TemperatureLastHour()
+        [Route("temperatures/{interval}")]
+        public async Task<ActionResult> Temperatures(int interval)
         {
             _logger.LogInformation("sensors->temperature-last-hour");
-            var values = await _sensorsService.GetLastHourTemperature();
+            var values = await _sensorsService.GetTemperatures(interval);
             var rows = new List<object>();
 
             var row = new List<object>();
@@ -160,6 +160,33 @@ namespace SensorServer.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Barometer {error_message}", ex.Message);
+            }
+            return Ok();
+        }
+
+        [HttpPost("graph/{filename}")]
+
+        public async Task<IActionResult> StoreGraph(string filename)
+        {
+            _logger.LogInformation("start storing graph {filename}", filename);
+            try
+            {
+                if (Request.Form.Files!=null)
+                    foreach (var file in Request.Form.Files)
+                    {
+                        var fileName = Path.GetFileName(file.FileName);
+                        _logger.LogInformation("start storing graph-> get filename {filename}", fileName);
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images", fileName);
+                        _logger.LogInformation("start storing graph-> get file path {filepath}", filePath);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+                    }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "StoreGraph {filename} failed", filename);
             }
             return Ok();
         }
