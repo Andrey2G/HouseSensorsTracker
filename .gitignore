@@ -137,3 +137,6 @@ dmypy.json
 /src/Services/SensorServer/.vs/SensorServer
 *.user
 /.vscode
+/src/Services/BotTools/bin/Debug/net6.0
+/src/Services/BotTools/obj
+/src/Services/.vs/ProjectEvaluation

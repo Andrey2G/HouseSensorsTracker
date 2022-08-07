@@ -258,9 +258,9 @@ namespace SensorServer.Services
                 _logger.LogInformation("SensorService->GetCurrentHeatpointHumidity->last key at {sensor_timestamp}", timestamp);
 
                 var lastValue = await _redis.GetDatabase().StringGetAsync($"dht11-h:last_value");
-                _logger.LogInformation("SensorService->GetCurrentHeatpointHumidity->last value {value} at {sensor_timestamp}", lastValue, timestamp);
-
-                result.AppendLine($"Humidity: {double.Parse(lastValue).ToString("F1")}% at {DateTimeOffset.FromUnixTimeSeconds(long.Parse(timestamp)).ToLocalTime().ToString("dd.MM.yyyy HH:mm")}");
+                var lastTempValue = await _redis.GetDatabase().StringGetAsync($"dht11-t:last_value");
+                _logger.LogInformation("SensorService->GetCurrentHeatpointHumidity->last value {value} with current temperature {humidity_temperature} at {sensor_timestamp}", lastValue, lastTempValue, timestamp);
+                result.AppendLine($"Относительная влажность: {double.Parse(lastValue).ToString("F1")}% при температуре с датчика {double.Parse(lastTempValue).ToString("F1")}°C at {DateTimeOffset.FromUnixTimeSeconds(long.Parse(timestamp)).ToLocalTime().ToString("dd.MM.yyyy HH:mm")}");
                 return result.ToString();
             }
             catch (Exception ex)

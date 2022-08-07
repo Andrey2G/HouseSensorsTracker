@@ -17,9 +17,8 @@ namespace SensorServer.Services.TgCommands
 
         public async Task<Message> Execute(ITelegramBotClient botClient, Message message)
         {
-            return await botClient.SendTextMessageAsync(message.Chat.Id, "Sensor disconnected");
-            //string response = await _sensorsService.GetCurrentHeatpointHumidity();
-            //return await botClient.SendTextMessageAsync(message.Chat.Id, response);
+            string response = await _sensorsService.GetCurrentHeatpointHumidity();
+            return await botClient.SendTextMessageAsync(message.Chat.Id, response);
         }
     }
 }

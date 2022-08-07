@@ -25,8 +25,10 @@ namespace SensorServer.Services
             // Configure custom endpoint
             // see https://core.telegram.org/bots/api#setwebhook
             var webhookUrl = @$"{_telegramConfiguration.webhook_url}/bot/{_telegramConfiguration.token}";
+            _logger.LogInformation("remove webhook");
+            await botClient.DeleteWebhookAsync(cancellationToken: cancellationToken);
             _logger.LogInformation("setup webhook: {webhookAddress}", webhookUrl);
-            await botClient.SetWebhookAsync(url: webhookUrl, allowedUpdates: Array.Empty<UpdateType>(), cancellationToken: cancellationToken);
+            await botClient.SetWebhookAsync(url: webhookUrl, allowedUpdates: Array.Empty<UpdateType>(), dropPendingUpdates:true, cancellationToken: cancellationToken);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)

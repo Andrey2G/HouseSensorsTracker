@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensorsServer", "SensorServer\SensorsServer.csproj", "{63FC52B7-FCF1-4971-9AA0-44AB887B8E15}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotTools", "BotTools\BotTools.csproj", "{7315EA0C-9AD4-4341-8A32-A7C7038367E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{63FC52B7-FCF1-4971-9AA0-44AB887B8E15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63FC52B7-FCF1-4971-9AA0-44AB887B8E15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63FC52B7-FCF1-4971-9AA0-44AB887B8E15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7315EA0C-9AD4-4341-8A32-A7C7038367E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7315EA0C-9AD4-4341-8A32-A7C7038367E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7315EA0C-9AD4-4341-8A32-A7C7038367E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7315EA0C-9AD4-4341-8A32-A7C7038367E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
