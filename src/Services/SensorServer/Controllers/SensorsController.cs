@@ -176,7 +176,7 @@ namespace SensorServer.Controllers
                     {
                         var fileName = Path.GetFileName(file.FileName);
                         _logger.LogInformation("start storing graph-> get filename {filename}", fileName);
-                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images", fileName);
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/images", fileName);
                         _logger.LogInformation("start storing graph-> get file path {filepath}", filePath);
                         using (var fileStream = new FileStream(filePath, FileMode.Create))
                         {
