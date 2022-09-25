@@ -25,10 +25,18 @@ namespace SensorServer.Services
             // Configure custom endpoint
             // see https://core.telegram.org/bots/api#setwebhook
             var webhookUrl = @$"{_telegramConfiguration.webhook_url}/bot/{_telegramConfiguration.token}";
-            _logger.LogInformation("remove webhook");
-            await botClient.DeleteWebhookAsync(cancellationToken: cancellationToken);
-            _logger.LogInformation("setup webhook: {webhookAddress}", webhookUrl);
-            await botClient.SetWebhookAsync(url: webhookUrl, allowedUpdates: Array.Empty<UpdateType>(), dropPendingUpdates:true, cancellationToken: cancellationToken);
+            try
+            {
+                _logger.LogInformation("StartAsync: remove webhook");
+                await botClient.DeleteWebhookAsync(cancellationToken: cancellationToken);
+            }
+            catch (Exception ex) { _logger.LogError(ex, "StartAsync: can't remove webhook"); }
+            try
+            {
+                _logger.LogInformation("setup webhook: {webhookAddress}", webhookUrl);
+                await botClient.SetWebhookAsync(url: webhookUrl, allowedUpdates: Array.Empty<UpdateType>(), dropPendingUpdates: true, cancellationToken: cancellationToken);
+            }
+            catch (Exception ex) { _logger.LogError(ex, "StartAsync: can't setup webhook"); throw; }
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
@@ -37,8 +45,12 @@ namespace SensorServer.Services
             var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
 
             // Remove webhook when service shutdown
-            _logger.LogInformation("remove webhook");
-            //await botClient.DeleteWebhookAsync(cancellationToken: cancellationToken);
+            try
+            {
+                _logger.LogInformation("StopAsync: remove webhook");
+                await botClient.DeleteWebhookAsync(cancellationToken: cancellationToken);
+            }
+            catch (Exception ex) { _logger.LogError(ex, "StopAsync: can't remove webhook"); }
             //botClient.SendTextMessageAsync()
             await Task.CompletedTask;
         }
