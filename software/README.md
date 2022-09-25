@@ -1,3 +1,5 @@
+# System setup
+
 ## OS Raspberry OS 64 Lite
 
 https://downloads.raspberrypi.org/raspios_lite_arm64/images/
@@ -79,6 +81,7 @@ ls /sys/bus/w1/devices
 ```
 
 To work with GPIO from Python need to install RPi.GPIO
+
 ```console
 sudo apt-get update
 sudo apt-get install python3-rpi.gpio
@@ -86,6 +89,7 @@ sudo pip3 install RPi.GPIO
 ```
 
 To use DHT11 sensor (humiture & temperature module) need to install Adafruit library
+
 ```console
 git clone https://github.com/adafruit/Adafruit_Python_DHT.git
 cd Adafruit_Python_DHT
@@ -94,26 +98,25 @@ sudo python3 setup.py install
 ```
 
 To use Barometer sensor (BMP180) need to setup I2C bus
+
 ```console
 sudo nano /etc/modules
 ```
 
 Add the following lines
+
 ```console
 i2c-bcm2708
 i2c-dev
 ```
 
 Enable I2C and reboot
+
 ```console
 sudo raspi-config
 Interface Options->P5 I2C->Enable->Yes
 sudo reboot
 ```
-
-
-
-
 
 ## RRD Tool
 
