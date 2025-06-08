@@ -11,7 +11,7 @@ namespace SensorServer.Services.TgCommands
 
         public async Task<Message> Execute(ITelegramBotClient botClient, Message message)
         {
-            return await botClient.SendTextMessageAsync(message.Chat.Id,
+            return await botClient.SendMessage(message.Chat.Id,
                  "Commands:\n" +
                                  "/ping - check the Bot liveness\n" +
                                  "/heathpoint_temperature_current - Current temperature from sensors at the heatpoint of hot water\n" +

@@ -20,7 +20,7 @@ namespace SensorServer.Services.TgCommands
         public async Task<Message> Execute(ITelegramBotClient botClient, Message message)
         {
             using var sr = System.IO.File.OpenRead(System.IO.Path.Combine(_env.WebRootPath, "images/temperature-last-3h.png"));
-            return await botClient.SendPhotoAsync(message.Chat.Id, new Telegram.Bot.Types.InputFiles.InputOnlineFile(sr, "graph"));
+            return await botClient.SendPhoto(message.Chat.Id, InputFile.FromStream(sr, "graph"));
         }
     }
 }

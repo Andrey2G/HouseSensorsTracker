@@ -28,13 +28,13 @@ namespace SensorServer.Services
             try
             {
                 _logger.LogInformation("StartAsync: remove webhook");
-                await botClient.DeleteWebhookAsync(cancellationToken: cancellationToken);
+                await botClient.DeleteWebhook(cancellationToken: cancellationToken);
             }
             catch (Exception ex) { _logger.LogError(ex, "StartAsync: can't remove webhook"); }
             try
             {
                 _logger.LogInformation("setup webhook: {webhookAddress}", webhookUrl);
-                await botClient.SetWebhookAsync(url: webhookUrl, allowedUpdates: Array.Empty<UpdateType>(), dropPendingUpdates: true, cancellationToken: cancellationToken);
+                await botClient.SetWebhook(url: webhookUrl, allowedUpdates: Array.Empty<UpdateType>(), dropPendingUpdates: true, cancellationToken: cancellationToken);
             }
             catch (Exception ex) { _logger.LogError(ex, "StartAsync: can't setup webhook"); throw; }
         }
@@ -48,7 +48,7 @@ namespace SensorServer.Services
             try
             {
                 _logger.LogInformation("StopAsync: remove webhook");
-                await botClient.DeleteWebhookAsync(cancellationToken: cancellationToken);
+                await botClient.DeleteWebhook(cancellationToken: cancellationToken);
             }
             catch (Exception ex) { _logger.LogError(ex, "StopAsync: can't remove webhook"); }
             //botClient.SendTextMessageAsync()

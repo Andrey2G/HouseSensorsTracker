@@ -37,7 +37,7 @@ botClient.StartReceiving(
     cancellationToken: cts.Token
 );
 
-var me = await botClient.GetMeAsync();
+var me = await botClient.GetMe();
 
 Console.WriteLine($"Start listening for @{me.Username}");
 Console.ReadLine();
@@ -60,7 +60,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
     Console.WriteLine($"Received a '{messageText}' message in chat {chatId}.");
 
     // Echo received message text
-    Message sentMessage = await botClient.SendTextMessageAsync(
+    Message sentMessage = await botClient.SendMessage(
         chatId: chatId,
         text: "You said:\n" + messageText,
         cancellationToken: cancellationToken);

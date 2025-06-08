@@ -20,7 +20,7 @@ namespace SensorServer.Services
         }
 
         string _botUsername = "";
-        public async Task<string> BotUserName() { if (string.IsNullOrEmpty(_botUsername)) _botUsername= $"@{(await _tgBotClient.GetMeAsync()).Username}"; return _botUsername; }
+        public async Task<string> BotUserName() { if (string.IsNullOrEmpty(_botUsername)) _botUsername= $"@{(await _tgBotClient.GetMe()).Username}"; return _botUsername; }
 
         public async Task EchoAsync(Update update)
         {
@@ -79,7 +79,7 @@ namespace SensorServer.Services
             else
             {
                 //unknown command
-                await _tgBotClient.SendTextMessageAsync(message.Chat.Id, "Unknown command. Try /help to get the list of available commands.");
+                await _tgBotClient.SendMessage(message.Chat.Id, "Unknown command. Try /help to get the list of available commands.");
                 _logger.LogInformation("Unknown Command {command}",command);
             }
         }

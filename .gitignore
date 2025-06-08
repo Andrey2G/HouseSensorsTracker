@@ -140,3 +140,4 @@ dmypy.json
 /src/Services/BotTools/bin/Debug/net6.0
 /src/Services/BotTools/obj
 /src/Services/.vs/ProjectEvaluation
+/src/Services/BotTools/bin/Debug/net9.0
