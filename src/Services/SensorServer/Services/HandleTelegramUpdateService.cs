@@ -32,8 +32,8 @@ namespace SensorServer.Services
                 // UpdateType.ShippingQuery:
                 // UpdateType.PreCheckoutQuery:
                 // UpdateType.Poll:
-                UpdateType.Message => OnMessageReceived(update.Message!),
-                UpdateType.EditedMessage => OnMessageReceived(update.EditedMessage!),
+                UpdateType.Message => OnMessageReceived(update?.Message ?? new Message()),
+                UpdateType.EditedMessage => OnMessageReceived(update?.EditedMessage ?? new Message()),
                 //UpdateType.CallbackQuery => ,
                 //UpdateType.InlineQuery => 
                 //UpdateType.ChosenInlineResult => , 
