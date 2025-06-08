@@ -24,24 +24,23 @@ namespace SensorServer.Services
 
         public async Task EchoAsync(Update update)
         {
-            var handler = update.Type switch
-            {
-                // UpdateType.Unknown:
-                // UpdateType.ChannelPost:
-                // UpdateType.EditedChannelPost:
-                // UpdateType.ShippingQuery:
-                // UpdateType.PreCheckoutQuery:
-                // UpdateType.Poll:
-                UpdateType.Message => OnMessageReceived(update.Message!),
-                UpdateType.EditedMessage => OnMessageReceived(update.EditedMessage!),
-                //UpdateType.CallbackQuery => ,
-                //UpdateType.InlineQuery => 
-                //UpdateType.ChosenInlineResult => , 
-                _ => UnknownUpdateHandlerAsync(update)
-            };
-
             try
             {
+                var handler = update.Type switch
+                {
+                    // UpdateType.Unknown:
+                    // UpdateType.ChannelPost:
+                    // UpdateType.EditedChannelPost:
+                    // UpdateType.ShippingQuery:
+                    // UpdateType.PreCheckoutQuery:
+                    // UpdateType.Poll:
+                    UpdateType.Message => OnMessageReceived(update.Message!),
+                    UpdateType.EditedMessage => OnMessageReceived(update.EditedMessage!),
+                    //UpdateType.CallbackQuery => ,
+                    //UpdateType.InlineQuery => 
+                    //UpdateType.ChosenInlineResult => , 
+                    _ => UnknownUpdateHandlerAsync(update)
+                };
                 await handler;
             }
             catch (Exception exception)

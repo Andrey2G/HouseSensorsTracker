@@ -10,7 +10,8 @@ namespace SensorServer.Controllers
         public async Task<IActionResult> Post([FromServices] HandleTelegramUpdateService handleTelegram,
                                           [FromBody] Update update)
         {
-            await handleTelegram.EchoAsync(update);
+            if (update!=null)
+                await handleTelegram.EchoAsync(update);
             return Ok();
         }
     }
